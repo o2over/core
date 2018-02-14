@@ -93,6 +93,12 @@ describe('Block', () => {
         expect(block3.equals(Block.GENESIS)).toBeTruthy();
     });
 
+    it('light GENESIS is valid (testing)', (done) => {
+        (async () => {
+            expect(await Block.GENESIS.toLight().verify(new Time())).toBeTruthy();
+        })().then(done, done.fail);
+    });
+
     it('GENESIS is valid (testing)', (done) => {
         (async () => {
             time = new Time();
