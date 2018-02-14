@@ -169,6 +169,7 @@ const sources = {
         './src/main/generic/network/PeerKeyStore.js',
         './src/main/generic/network/Peer.js',
         './src/main/generic/miner/Miner.js',
+        './src/main/generic/miner/PoolClient.js',
         './src/main/generic/wallet/Wallet.js',
         './src/main/generic/wallet/MultiSigWallet.js',
         './src/main/generic/wallet/WalletStore.js',

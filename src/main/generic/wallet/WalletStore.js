@@ -71,7 +71,11 @@ class WalletStore {
         if (key) {
             return Wallet.loadEncrypted(buf, key);
         }
-        return Wallet.loadPlain(buf);
+        try {
+            return Wallet.loadPlain(buf);
+        } catch (e) {
+            return null;
+        }
     }
 
     /**

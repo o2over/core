@@ -35,6 +35,7 @@ if ((!argv.host || !argv.port || !argv.key || !argv.cert) && !argv.dumb || argv.
         '         [:THROTTLE_WAIT]]]  throttled using THROTTLE_AFTER and _WAIT arguments.\n' +
         '  --passive                  Do not actively connect to the network and do not\n' +
         '                             wait for connection establishment.\n' +
+        '  --pool=SERVER              Select SERVER as the mining pool server to join.\n' +
         '  --rpc[=PORT]               Start JSON-RPC server on port PORT (default: 8648).\n' +
         '  --statistics[=INTERVAL]    Output statistics like mining hashrate, current\n' +
         '                             account balance and mempool size every INTERVAL\n' +
@@ -57,6 +58,7 @@ const minerOptions = argv.miner;
 const statisticsOptions = argv.statistics;
 const passive = argv.passive;
 const rpc = argv.rpc;
+const pool = argv.pool;
 const walletSeed = argv['wallet-seed'] || null;
 const walletAddress = argv['wallet-address'] || null;
 const isNano = argv.type === 'nano';
@@ -75,7 +77,7 @@ if (argv['log-tag']) {
     }
     argv['log-tag'].forEach((lt) => {
         const s = lt.split(':');
-        Nimiq.Log.instance.setLoggable(s[0], s.length === 1 ? 2 : s[1]);
+        Nimiq.Log.instance.setLoggable(s[0], s.length === 1 ? 2 : parseInt(s[1]));
     });
 }
 
@@ -206,6 +208,11 @@ const $ = {};
     if (rpc) {
         $.rpcServer = new JsonRpcServer(rpc ? 8648 : undefined);
         $.rpcServer.init($.blockchain, $.accounts, $.mempool, $.network, $.miner, $.walletStore);
+    }
+
+    if (pool) {
+        $.pool = new Nimiq.PoolClient($.miner, $.wallet.address);
+        $.pool.connect(pool);
     }
 })().catch(e => {
     console.error(e);
