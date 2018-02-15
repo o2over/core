@@ -432,7 +432,9 @@ class PeerAddresses extends Observable {
         peerAddressState.bannedUntil = -1;
         peerAddressState.banBackoff = PeerAddresses.INITIAL_FAILED_BACKOFF;
 
-        peerAddressState.peerAddress = peerAddress;
+        if (!peerAddressState.peerAddress.isSeed()) {
+            peerAddressState.peerAddress = peerAddress;
+        }
 
         // Add route.
         if (peerAddress.protocol === Protocol.RTC) {
@@ -696,8 +698,8 @@ class PeerAddresses extends Observable {
 
                 case PeerAddressState.BANNED:
                     if (peerAddressState.bannedUntil <= now) {
-                        // If we banned because of failed attempts or it is a seed node, try again.
-                        if (peerAddressState.failedAttempts >= peerAddressState.maxFailedAttempts || addr.isSeed()) {
+                        // Don't remove seed addresses, unban them.
+                        if (addr.isSeed()) {
                             // Restore banned seed addresses to the NEW state.
                             peerAddressState.state = PeerAddressState.NEW;
                             peerAddressState.failedAttempts = 0;

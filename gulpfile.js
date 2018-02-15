@@ -19,22 +19,22 @@ const sources = {
             './src/main/platform/browser/utils/LogNative.js',
             './src/main/generic/utils/Log.js',
             './src/main/generic/utils/Observable.js',
+            './src/main/generic/network/DataChannel.js',
             './src/main/platform/browser/crypto/CryptoLib.js',
             './src/main/platform/browser/network/webrtc/WebRtcFactory.js',
             './src/main/platform/browser/network/webrtc/WebRtcDataChannel.js',
             './src/main/platform/browser/network/webrtc/WebRtcUtils.js',
             './src/main/platform/browser/network/webrtc/WebRtcConnector.js',
-            './src/main/platform/browser/network/websocket/WebSocketFactory.js',
-            './src/main/platform/browser/network/websocket/WebSocketConnector.js'
+            './src/main/platform/browser/network/websocket/WebSocketFactory.js'
         ],
         node: [
             './src/main/platform/nodejs/utils/LogNative.js',
             './src/main/generic/utils/Log.js',
             './src/main/generic/utils/Observable.js',
+            './src/main/generic/network/DataChannel.js',
             './src/main/platform/nodejs/crypto/CryptoLib.js',
             './src/main/platform/nodejs/network/webrtc/WebRtcConnector.js',
-            './src/main/platform/nodejs/network/websocket/WebSocketFactory.js',
-            './src/main/platform/nodejs/network/websocket/WebSocketConnector.js'
+            './src/main/platform/nodejs/network/websocket/WebSocketFactory.js'
         ]
     },
     generic: [
@@ -158,6 +158,8 @@ const sources = {
         './src/main/generic/network/message/GetTransactionReceiptsMessage.js',
         './src/main/generic/network/message/TransactionReceiptsMessage.js',
         './src/main/generic/network/message/MessageFactory.js',
+        './src/main/generic/network/websocket/WebSocketConnector.js',
+        './src/main/generic/network/websocket/WebSocketDataChannel.js',
         './src/main/generic/network/NetworkAgent.js',
         './src/main/generic/network/NetworkConfig.js',
         './src/main/generic/network/Network.js',
@@ -189,7 +191,34 @@ const sources = {
         './src/main/generic/utils/crypto/*.js',
         './src/main/generic/utils/number/*.js',
         './src/main/generic/utils/buffer/*.js',
-        './src/main/generic/miner/MinerWorker*.js'
+        './src/main/generic/miner/MinerWorker*.js',
+
+        './src/main/generic/utils/array/ArrayUtils.js',
+        './src/main/generic/utils/assert/Assert.js',
+        './src/main/generic/utils/buffer/SerialBuffer.js',
+        './src/main/generic/utils/merkle/MerkleTree.js',
+        './src/main/generic/utils/merkle/MerklePath.js',
+        './src/main/generic/consensus/Policy.js',
+        './src/main/generic/consensus/base/primitive/Primitive.js',
+        './src/main/generic/consensus/base/primitive/Hash.js',
+        './src/main/generic/consensus/base/primitive/PublicKey.js',
+        './src/main/generic/consensus/base/primitive/Signature.js',
+        './src/main/generic/consensus/base/account/Address.js',
+        './src/main/generic/consensus/base/account/Account.js',
+        './src/main/generic/consensus/base/account/PrunedAccount.js',
+        './src/main/generic/consensus/base/account/BasicAccount.js',
+        './src/main/generic/consensus/base/account/Contract.js',
+        './src/main/generic/consensus/base/account/HashedTimeLockedContract.js',
+        './src/main/generic/consensus/base/account/VestingContract.js',
+        './src/main/generic/consensus/base/block/BlockHeader.js',
+        './src/main/generic/consensus/base/block/BlockInterlink.js',
+        './src/main/generic/consensus/base/block/BlockBody.js',
+        './src/main/generic/consensus/base/block/BlockUtils.js',
+        './src/main/generic/consensus/base/block/Block.js',
+        './src/main/generic/consensus/base/transaction/Transaction.js',
+        './src/main/generic/consensus/base/transaction/SignatureProof.js',
+        './src/main/generic/consensus/base/transaction/BasicTransaction.js',
+        './src/main/generic/consensus/base/transaction/ExtendedTransaction.js',
     ],
     sectest: [
         'sectests/**/*.sectest.js'

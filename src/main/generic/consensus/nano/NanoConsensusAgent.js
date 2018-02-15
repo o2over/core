@@ -33,6 +33,12 @@ class NanoConsensusAgent extends BaseConsensusAgent {
         // Helper object to keep track of full blocks we're requesting from the peer.
         this._blockRequest = null;
 
+        // Flag to track chain proof requests.
+        this._requestedChainProof = false;
+
+        // Flag to track transaction receipts requests.
+        this._requestedTransactionReceipts = false;
+
         // Listen to consensus messages from the peer.
         peer.channel.on('chain-proof', msg => this._onChainProof(msg));
         peer.channel.on('accounts-proof', msg => this._onAccountsProof(msg));
@@ -90,18 +96,18 @@ class NanoConsensusAgent extends BaseConsensusAgent {
      */
     _requestChainProof() {
         // Only one chain proof request at a time.
-        if (this._timers.timeoutExists('getChainProof')) {
+        if (this._requestedChainProof) {
             return;
         }
 
         // Request ChainProof from peer.
         this._peer.channel.getChainProof();
+        this._requestedChainProof = true;
 
         // Drop the peer if it doesn't send the chain proof within the timeout.
-        // TODO should we ban here instead?
-        this._timers.setTimeout('getChainProof', () => {
+        this._peer.channel.expectMessage(Message.Type.CHAIN_PROOF, () => {
             this._peer.channel.close('getChainProof timeout');
-        }, NanoConsensusAgent.CHAINPROOF_REQUEST_TIMEOUT);
+        }, NanoConsensusAgent.CHAINPROOF_REQUEST_TIMEOUT, NanoConsensusAgent.CHAINPROOF_CHUNK_TIMEOUT);
     }
 
     /**
@@ -112,15 +118,14 @@ class NanoConsensusAgent extends BaseConsensusAgent {
     async _onChainProof(msg) {
         Log.d(NanoConsensusAgent, `[CHAIN-PROOF] Received from ${this._peer.peerAddress}: ${msg.proof}`);
 
-        // Check if we have requested an interlink chain, reject unsolicited ones.
-        if (!this._timers.timeoutExists('getChainProof')) {
+        // Check if we have requested a chain proof, reject unsolicited ones.
+        // FIXME
+        if (!this._requestedChainProof) {
             Log.w(NanoConsensusAgent, `Unsolicited chain proof received from ${this._peer.peerAddress}`);
             // TODO close/ban?
             return;
         }
-
-        // Clear timeout.
-        this._timers.clearTimeout('getChainProof');
+        this._requestedChainProof = false;
 
         if (this._syncing) {
             this.fire('verify-chain-proof', this._peer.peerAddress);
@@ -285,7 +290,7 @@ class NanoConsensusAgent extends BaseConsensusAgent {
             this._peer.channel.getAccountsProof(blockHash, addresses);
 
             // Drop the peer if it doesn't send the accounts proof within the timeout.
-            this._timers.setTimeout('getAccountsProof', () => {
+            this._peer.channel.expectMessage(Message.Type.ACCOUNTS_PROOF, () => {
                 this._peer.channel.close('getAccountsProof timeout');
                 reject(new Error('timeout')); // TODO error handling
             }, NanoConsensusAgent.ACCOUNTSPROOF_REQUEST_TIMEOUT);
@@ -306,9 +311,6 @@ class NanoConsensusAgent extends BaseConsensusAgent {
             // TODO close/ban?
             return;
         }
-
-        // Clear the request timeout.
-        this._timers.clearTimeout('getAccountsProof');
 
         const addresses = this._accountsRequest.addresses;
         const blockHash = this._accountsRequest.blockHash;
@@ -413,7 +415,7 @@ class NanoConsensusAgent extends BaseConsensusAgent {
             this._peer.channel.getTransactionsProof(blockHash, addresses);
 
             // Drop the peer if it doesn't send the accounts proof within the timeout.
-            this._timers.setTimeout('getTransactionsProof', () => {
+            this._peer.channel.expectMessage(Message.Type.TRANSACTIONS_PROOF, () => {
                 this._peer.channel.close('getTransactionsProof timeout');
                 reject(new Error('timeout')); // TODO error handling
             }, NanoConsensusAgent.TRANSACTIONSPROOF_REQUEST_TIMEOUT);
@@ -434,9 +436,6 @@ class NanoConsensusAgent extends BaseConsensusAgent {
             // TODO close/ban?
             return;
         }
-
-        // Clear the request timeout.
-        this._timers.clearTimeout('getTransactionsProof');
 
         const blockHash = this._transactionsRequest.blockHash;
         /** @type {BlockHeader} */
@@ -462,7 +461,7 @@ class NanoConsensusAgent extends BaseConsensusAgent {
 
         // Verify the proof.
         const proof = msg.proof;
-        if (!header.bodyHash.equals(await proof.root())) {
+        if (!header.bodyHash.equals(proof.root())) {
             Log.w(NanoConsensusAgent, `Invalid TransactionsProof received from ${this._peer.peerAddress}`);
             // TODO ban instead?
             this._peer.channel.close('Invalid TransactionsProof');
@@ -477,11 +476,12 @@ class NanoConsensusAgent extends BaseConsensusAgent {
     /**
      * @param {Address} address
      */
-    getTransactions(address) {
-        this._peer.channel.getTransactions(address);
+    getTransactionReceipts(address) {
+        this._peer.channel.getTransactionReceipts(address);
+        this._requestedTransactionReceipts = true;
 
-        this._timers.setTimeout('getTransactions', () => {
-            this._peer.channel.close('getTransactionsProof timeout');
+        this._peer.channel.expectMessage(Message.Type.TRANSACTION_RECEIPTS, () => {
+            this._peer.channel.close('getTransactionReceipts timeout');
         }, NanoConsensusAgent.TRANSACTIONS_REQUEST_TIMEOUT);
     }
 
@@ -494,14 +494,12 @@ class NanoConsensusAgent extends BaseConsensusAgent {
         Log.d(NanoConsensusAgent, `[TRANSACTION-RECEIPTS] Received from ${this._peer.peerAddress}: ${msg.transactionReceipts.length}`);
 
         // Check if we have requested transaction receipts, reject unsolicited ones.
-        if (!this._timers.timeoutExists('getTransactions')) {
+        if (!this._requestedTransactionReceipts) {
             Log.w(NanoConsensusAgent, `Unsolicited transaction receipts received from ${this._peer.peerAddress}`);
             // TODO close/ban?
             return;
         }
-
-        // Clear timeout.
-        this._timers.clearTimeout('getTransactions');
+        this._requestedTransactionReceipts = false;
 
         this.fire('transaction-receipts', msg.transactionReceipts);
     }
@@ -539,8 +537,7 @@ class NanoConsensusAgent extends BaseConsensusAgent {
             this._peer.channel.getData([vector]);
 
             // Drop the peer if it doesn't send the block within the timeout.
-            this._timers.setTimeout('getBlock', () => {
-                this._peer.channel.close('getBlock timeout');
+            this._peer.channel.expectMessage([Message.Type.BLOCK, Message.Type.NOT_FOUND], () => {
                 reject(new Error('timeout')); // TODO error handling
             }, BaseConsensusAgent.REQUEST_TIMEOUT);
         });
@@ -559,9 +556,6 @@ class NanoConsensusAgent extends BaseConsensusAgent {
             // TODO close/ban?
             return;
         }
-
-        // Clear the request timeout.
-        this._timers.clearTimeout('getBlock');
 
         const blockHash = this._blockRequest.hash;
         const resolve = this._blockRequest.resolve;
@@ -602,8 +596,6 @@ class NanoConsensusAgent extends BaseConsensusAgent {
     _onNotFound(msg) {
         // Check if this notfound message corresponds to our block request.
         if (this._blockRequest && msg.vectors.length === 1 && msg.vectors[0].hash.equals(this._blockRequest.hash)) {
-            this._timers.clearTimeout('getBlock');
-
             const reject = this._blockRequest.reject;
             this._blockRequest = null;
 
@@ -625,12 +617,17 @@ class NanoConsensusAgent extends BaseConsensusAgent {
     }
 }
 /**
- * Maximum time (ms) to wait for chainProof after sending out getChainProof before dropping the peer.
+ * Maximum time (ms) to wait for chain-proof after sending out get-chain-proof before dropping the peer.
  * @type {number}
  */
-NanoConsensusAgent.CHAINPROOF_REQUEST_TIMEOUT = 1000 * 30;
+NanoConsensusAgent.CHAINPROOF_REQUEST_TIMEOUT = 1000 * 45;
 /**
- * Maximum time (ms) to wait for accountsProof after sending out getAccountsProof before dropping the peer.
+ * Maximum time (ms) to wait for between chain-proof chunks before dropping the peer.
+ * @type {number}
+ */
+NanoConsensusAgent.CHAINPROOF_CHUNK_TIMEOUT = 1000 * 10;
+/**
+ * Maximum time (ms) to wait for accounts-proof after sending out get-accounts-proof before dropping the peer.
  * @type {number}
  */
 NanoConsensusAgent.ACCOUNTSPROOF_REQUEST_TIMEOUT = 1000 * 5;
