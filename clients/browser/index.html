@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Nimiq Blockchain Cockpit &ndash; Alpha</title>
+    <title>Nimiq Blockchain Cockpit &ndash; Luna</title>
 
     <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
@@ -10,24 +10,22 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
-<header>
-    <span class="name icon-nimiq">nimiq</span>
-    <span class="subtitle">Blockchain Cockpit &mdash; Luna</span>
-</header>
 
 <script src="../../dist/nimiq.js"></script>
 
-<div id="content">
-    <div class="info" client-type-ui>
-        <div class="info-title not-connected" title>Client Types</div>
-        <hr/>
-        <div class="info-block">
-            <a href="#full">Full</a>
-            <a href="#light">Light</a>
-            <a href="#nano">Nano</a>
+<header>
+    <span class="name icon-nimiq">nimiq</span>
+    <div class="subheader">
+        <div class="subtitle">Blockchain Cockpit &mdash; Luna</div>
+        <div id="client-types">
+            <div id="full" class="client-link-container"><a href="#full">Full</a></div>
+            <div id="light" class="client-link-container"><a href="#light">Light</a></div>
+            <div id="nano" class="client-link-container"><a href="#nano">Nano</a></div>
         </div>
     </div>
+</header>
 
+<div id="content">
     <div overlay>
         <div class="message">
             Nimiq Blockchain Cockpit is already running in another browser window or tab.
@@ -169,17 +167,17 @@
                         </label>
                     </div>
 
-                    <div sender-ui label="Sender" show="basic vesting-creation htlc-creation general"></div>
+                    <div sender-ui label="Sender"></div>
 
                     <div class="input-group" show="plain">
                         <label>
-                            <strong>Sender</strong>
+                            <strong>Plain Sender</strong>
                             <input tx-plain-sender name="tx-plain-sender" maxlength="45" size="45">
                         </label>
                     </div>
                     <div class="input-group" show="plain">
                         <label>
-                            <strong>Sender Type</strong>
+                            <strong>Plain Sender Type</strong>
                             <input tx-plain-sender-type name="tx-plain-sender-type" type="number" step="1">
                         </label>
                     </div>
@@ -204,7 +202,7 @@
                     <div class="input-group">
                         <label>
                             <strong>Fee</strong>
-                            <input tx-fee name="tx-fee" type="number" step="0.01">
+                            <input tx-fee name="tx-fee" type="number" step="0.01" placeholder="0">
                         </label>
                     </div>
                     <div class="input-group">
@@ -331,7 +329,7 @@
         <div class="right">
             <div blockchain-ui>
                 <div class="info">
-                    <div class="info-title">Blockchain</div>
+                    <div class="info-title not-connected" title>Blockchain</div>
                     <hr/>
 
                     <div class="info-block">
@@ -347,49 +345,63 @@
                         <span average-block-time></span> <small>average</small> /
                         <span last-block-time></span> <small>last</small>
                     </div>
-                    <div class="info-block">
-                        <strong>Accounts Hash</strong>
-                        <hash chain-accounts-hash></hash>
-                    </div>
                     <hr/>
                 </div>
 
                 <div class="info">
-                    <div class="info-title">Head Block</div>
+                    <div class="info-title">Block</div>
                     <hr/>
 
-                    <div class="info-block">
-                        <strong>Hash</strong>
-                        <hash head-hash></hash>
+                    <div class="input-group">
+                        <label>
+                            <strong>Height</strong>
+                            <input block-height-input name="block-height" type="number" step="1" min="0">
+                        </label>
                     </div>
-                    <div class="info-block">
-                        <strong>PoW Hash</strong>
-                        <hash head-pow-hash></hash>
+                    <div block-info>
+                        <div class="info-block">
+                            <strong>Hash</strong>
+                            <hash block-hash></hash>
+                        </div>
+                        <div class="info-block">
+                            <strong>PoW Hash</strong>
+                            <hash block-pow-hash></hash>
+                        </div>
+                        <div class="info-block">
+                            <strong>Prev Hash</strong>
+                            <hash block-prev-hash></hash>
+                        </div>
+                        <div class="info-block">
+                            <strong>Accounts Hash</strong>
+                            <hash block-accounts-hash></hash>
+                        </div>
+                        <div class="info-block">
+                            <strong>Difficulty</strong>
+                            <span block-difficulty></span>
+                        </div>
+                        <div class="info-block">
+                            <strong>Timestamp</strong>
+                            <span block-timestamp></span>
+                        </div>
+                        <div class="info-block">
+                            <strong>Nonce</strong>
+                            <span block-nonce></span>
+                        </div>
+                        <div class="info-block collapsible collapsed">
+                            <strong block-interlink-title>Interlink</strong>
+                            <div block-interlink></div>
+                        </div>
+                        <div class="info-block collapsible collapsed">
+                            <span block-transactions-title>
+                                <strong>Transactions</strong>
+                                <span block-transactions-count></span>
+                            </span>
+                            <div block-transactions></div>
+                        </div>
                     </div>
-                    <div class="info-block">
-                        <strong>Prev Hash</strong>
-                        <hash head-prev-hash></hash>
-                    </div>
-                    <div class="info-block">
-                        <strong>Accounts Hash</strong>
-                        <hash head-accounts-hash></hash>
-                    </div>
-                    <div class="info-block">
-                        <strong>Difficulty</strong>
-                        <span head-difficulty></span>
-                    </div>
-                    <div class="info-block">
-                        <strong>Timestamp</strong>
-                        <span head-timestamp></span>
-                    </div>
-                    <div class="info-block">
-                        <strong>Nonce</strong>
-                        <span head-nonce></span>
-                    </div>
-                    <div class="info-block">
-                        <strong>Interlink</strong>
-                        <span head-interlink></span>
-                    </div>
+                    <strong block-not-found style="display:none" class="info-block">
+                        Block not available.
+                    </strong>
                     <hr/>
                 </div>
             </div>

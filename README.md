@@ -15,11 +15,13 @@ Check out our testnet [Browser Miner](https://nimiq.com/miner) and [Wallet](http
 2. On Ubuntu, install `git` and `build-essential`: `sudo apt-get install -y git build-essential`.
     - On other Linux systems, install `git`, `python2.7`, `make` and `gcc`.
     - For MacOS or Windows, [check here for git](https://git-scm.com/downloads) and [here for compilation tools](https://github.com/nodejs/node-gyp#on-mac-os-x).
-3. Install gulp globally: `sudo npm install -g gulp` or `yarn global add gulp`.
-4. Clone this repository `git clone https://github.com/nimiq-network/core`.
-5. In the core directory, run `npm install` or `yarn`.
-6. In the core directory, run `npm run build` or `yarn build`.
-7. Open `clients/browser/(full|light|nano).html` in your browser to access the Browser Client.
+3. If you want to use `yarn` to manage the dependencies, run: `sudo npm install -g yarn`.
+4. Install `gulp` globally: `sudo npm install -g gulp` or `yarn global add gulp`.
+5. Clone this repository: `git clone https://github.com/nimiq-network/core`.
+6. Enter the core directory: `cd core`.
+7. Run: `npm install` or `yarn`.
+8. Run: `npm run build` or `yarn build`.
+9. Open `clients/browser/index.html` in your browser.
 
 ## Web Developers
 ### Most simple Web Application on top of the Nimiq Blockchain
@@ -33,8 +35,8 @@ Follow the Quickstart guide or use our CDN:
 ```
 
 
-### Run Browser client
-Open `clients/browser/(full|light|nano).html` in your browser.
+### Run browser client
+Open `clients/browser/index.html` in your browser.
 
 ### Run Node.js client
 To run a Node.js client you will need a **publicly routable IP**, **Domain** and **SSL Certificate** (get a free one at [letsencrypt.org](https://letsencrypt.org/)). Start the client by running `clients/nodejs/index.js`.
@@ -62,7 +64,7 @@ node index.js --host=HOSTNAME --port=PORT --cert=SSL_CERT_FILE --key=SSL_KEY_FIL
 | `--wallet-seed=SEED` | Initialize wallet using SEED as a wallet seed. |
 | `--wallet-address=ADDRESS` | Initialize wallet using ADDRESS as a wallet address. |
 
-### Build your own Browser client
+### Build your own browser client
 Just include `<script src="dist/nimiq.js"></script>` in your project.
 
 ### API
@@ -70,7 +72,7 @@ Visit the [API Documentation](dist/API_DOCUMENTATION.md).
 
 
 ## Core Developers
-Developers are free to choose between npm and yarn for managing the dependencies.
+Developers are free to choose between `npm` and `yarn` for managing the dependencies.
 ### Installation for Core Developers (using npm)
 - Node.js latest version (> 8.0.0)
 - Dependencies: `npm install`
@@ -98,9 +100,9 @@ Developers are free to choose between npm and yarn for managing the dependencies
 ### Test and Build
 
 #### Run Testsuite
-- `npm test` or `yarn test` runs browser and NodeJS tests.
+- `npm test` or `yarn test` runs browser and Node.js tests.
 - `npm run test-browser` or `yarn test-browser` runs the testsuite in your browser only.
-- `npm run test-node` or `yarn test-node` runs the testsuite in NodeJS only.
+- `npm run test-node` or `yarn test-node` runs the testsuite in Node.js only.
 
 #### Run ESLint
 `npm run lint` or `yarn lint` runs the ESLint javascript linter.

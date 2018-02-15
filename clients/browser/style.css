@@ -4,10 +4,10 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    background: linear-gradient(#3523ae,#1c0446) fixed;
 }
 
 body {
-    background-color: #042146;
     letter-spacing: 0.3px;
     color: #333;
     margin: auto;
@@ -27,32 +27,62 @@ header {
     margin: auto;
     margin-bottom: 25px;
     text-align: center;
+    display: flex;
+    color: white;
+    justify-content: center;
+    align-items: flex-end;
 }
 
 header .name {
-    color: #FFF;
     line-height: 85px;
     font-size: 62px;
     font-weight: lighter;
     font-family: sans-serif;
 }
 
-header .name span {
-    color: #FFC107;
+header .icon-nimiq::before {
+    content: '';
+    background-image: url('data:image/svg+xml,<svg width="499" height="440" xmlns="http://www.w3.org/2000/svg"><path d="M389.33 20.73C382.65 9.28 366.48 0 353.24 0h-208c-13.26 0-29.4 9.28-36.09 20.73L5.33 198.87c-6.68 11.45-6.68 30.02 0 41.47l103.82 178.14c6.68 11.45 22.85 20.74 36.09 20.74h208c13.26 0 29.4-9.28 36.09-20.74l103.82-178.14c6.68-11.45 6.68-30.01 0-41.47L389.33 20.73zM272.6 347.45v41.1h-38.74v-39.53c-23.53-2.82-51.45-13.02-70.28-30.12l25.57-39.06c20.4 15.06 37.96 22.9 57.1 22.9 22.43 0 32.31-9.1 32.31-27.29 0-40.63-105.4-39.84-105.4-111.06 0-38.74 23.2-65.57 60.7-73.1V50.51h38.74v40c25.57 3.6 43.92 16.16 59.45 32.47l-29.49 33.26c-14.43-13.02-26.66-19.77-43.45-19.77-19.13 0-29.49 7.53-29.49 25.26 0 37.49 105.41 34.35 105.41 109.96-.15 37.8-21.33 67.13-62.43 75.76z" fill="%23FFC107" fill-rule="evenodd"/></svg>');
+    background-repeat: no-repeat;
+    background-size: contain;
     margin-right: 10px;
-    font-size: 42px;
+    display: inline-block;
+    width: 70px;
+    height: 60px;
 }
 
-header .icon-nimiq::before {
-    color: #FFC107;
-    margin-right: 10px;
-    font-size: 54px;
+header .subheader {
+    padding-bottom: 3px;
+    padding-left: 8px;
+    width: 227px;
 }
 
 header .subtitle {
-    color: #FFF;
     font-size: 15px;
     letter-spacing: 2px;
+    position: absolute;
+    top: 80px;
+}
+
+
+#client-types {
+    display: flex;
+    justify-content: space-between;
+}
+
+#client-types .client-link-container {
+    /* to avoid that the page jumps to the selected anchor target */
+    padding-top: 96px;
+}
+
+#client-types a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.6);
+}
+
+#client-types .client-link-container:target a {
+    font-weight: bold;
+    color: white;
 }
 
 input,
@@ -184,7 +214,7 @@ hash {
     text-transform: uppercase;
     letter-spacing: 2px;
     padding: 7px 10px;
-    background: rgba(255, 255, 255, 0.42);
+    background: rgba(255, 255, 255, 0.2);
     color: #FFF;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -204,10 +234,12 @@ hash {
     flex-wrap: wrap;
 }
 
+label strong {
+    margin-right: 8px;
+}
+
 .input-group strong {
     display: inline-block;
-    width: 100px;
-    padding-right: 8px;
 }
 
 .input-group-button {
@@ -261,6 +293,7 @@ hash {
     right: 0;
     margin: auto;
     background: rgba(239, 239, 239, 0.95);
+    z-index: 1000;
 }
 
 [overlay] .message {
@@ -270,15 +303,20 @@ hash {
     padding: 15px;
 }
 
-/* Client Type UI */
+/* Block UI */
+
+[blockchain-ui] [block-height-input] {
+    width: 70px;
+}
+
 /* The order of these consensus classes is important to enable overwriting */
 
-[client-type-ui] [title] {
+[blockchain-ui] [title] {
     transition: background ease 0.5s;
     position: relative;
 }
 
-[client-type-ui] [title]:after {
+[blockchain-ui] [title]:after {
     position: absolute;
     top: 7px;
     right: 7px;
@@ -288,76 +326,95 @@ hash {
     font-weight: 400;
 }
 
-[client-type-ui] .not-connected {
-    background: crimson;
+[blockchain-ui] .not-connected {
+    background: #B71C1C;
     opacity: 0.6;
 }
 
-[client-type-ui] .not-connected::after {
+[blockchain-ui] .not-connected::after {
     content: "Not connected";
 }
 
-[client-type-ui] .initializing {
-    background: #FFC107;
+[blockchain-ui] .initializing {
+    background: #F9A825;
     opacity: 0.8;
 }
 
-[client-type-ui] .initializing::after {
+[blockchain-ui] .initializing::after {
     content: "Initializing...";
 }
 
-[client-type-ui] .connecting::after {
+[blockchain-ui] .connecting::after {
     content: "Connecting...";
 }
 
-[client-type-ui] .syncing {
-    background: orange;
+[blockchain-ui] .syncing {
+    background: #EF6C00;
     opacity: 0.8;
 }
-[client-type-ui] .syncing::after {
+[blockchain-ui] .syncing::after {
     content: "Syncronizing...";
 }
-[client-type-ui] .sync-chain-proof::after {
+[blockchain-ui] .sync-chain-proof::after {
     content: "Downloading proof...";
 }
-[client-type-ui] .verify-chain-proof::after {
+[blockchain-ui] .verify-chain-proof::after {
     content: "Verifying proof...";
 }
-[client-type-ui] .sync-accounts-tree::after {
+[blockchain-ui] .sync-accounts-tree::after {
     content: "Downloading accounts...";
 }
-[client-type-ui] .verify-accounts-tree::after {
+[blockchain-ui] .verify-accounts-tree::after {
     content: "Verifying accounts...";
 }
 
-[client-type-ui] .consensus-established {
-    background: #2dad2d;
+[blockchain-ui] .consensus-established {
+    background: #43A047;
     opacity: 1.0;
 }
 
-[client-type-ui] .consensus-established::after {
+[blockchain-ui] .consensus-established::after {
     content: "Consensus established";
 }
 
-[client-type-ui] .info-block {
-    display: flex;
-    justify-content: space-between;
+.collapsible > :first-child {
+    position: relative;
+    padding-right: 32px;
 }
 
-[client-type-ui] a {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    color: black;
+.collapsible > :first-child::before,
+.collapsible > :first-child::after {
+    /* close icon in CSS */
+    content: '';
+    position: absolute;
+    top: 6px;
+    display: inline-block;
+    height: 3px;
+    width: 14px;
+    background: #FFC107;
 }
 
-[client="nano"] [client-type-ui] a[href="#nano"],
-[client="light"] [client-type-ui] a[href="#light"],
-[client="full"] [client-type-ui] a[href="#full"] {
-    text-decoration: underline;
+.collapsible > :first-child::before {
+    transform: rotate(-45deg);
+    right: 8px;
 }
 
+.collapsible > :first-child::after {
+    transform: rotate(45deg);
+    right: 0;
+}
+
+.collapsible.collapsed > :first-child::before {
+    transform: rotate(45deg);
+}
+
+.collapsible.collapsed > :first-child::after {
+    transform: rotate(-45deg);
+}
+
+.collapsible.collapsed > :not(:first-child) {
+    display: none;
+}
 
 /* Account Info UI */
 
@@ -397,6 +454,10 @@ hash {
 
 [transaction-ui] select {
     display: block;
+}
+
+[transaction-ui] .input-group strong {
+    width: 100px;
 }
 
 [transaction-ui] [show] {
