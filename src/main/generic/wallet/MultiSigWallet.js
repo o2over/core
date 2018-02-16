@@ -161,6 +161,9 @@ class MultiSigWallet extends Wallet {
      * @returns {PartialSignature}
      */
     signTransaction(transaction, publicKeys, aggregatedCommitment, secret) {
+        // Sort public keys to get the right combined public key.
+        publicKeys = publicKeys.slice();
+        publicKeys.sort((a, b) => a.compare(b));
         return PartialSignature.create(this._keyPair.privateKey, this._keyPair.publicKey, publicKeys,
             secret, aggregatedCommitment, transaction.serializeContent());
     }
